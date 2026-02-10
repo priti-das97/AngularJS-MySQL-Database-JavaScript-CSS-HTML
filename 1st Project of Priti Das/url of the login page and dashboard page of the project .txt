@@ -1,0 +1,4 @@
+
+1) Url of the login page .... http://localhost/PritiDasFinalProject/login.php
+
+2) Url of the Dashboard .... http://localhost/PritiDasFinalProject/dashboard.php#!/dashboard

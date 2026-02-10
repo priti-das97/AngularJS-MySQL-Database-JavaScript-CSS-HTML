@@ -1,0 +1,260 @@
+<div ng-controller="PaymentController" style="font-family:Arial, sans-serif; color:#333;">
+
+  <!-- GLOBAL TABLE + BUTTON STYLING -->
+  <style>
+    .payment-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #c7c7c7;
+        background: #fff;
+        margin-top: 15px;
+    }
+
+    .payment-table th {
+        background: #2B547D;
+        color: #fff;
+        padding: 12px;
+        text-align: left;
+        border-right: 1px solid #e2e2e2;
+        font-weight: bold;
+    }
+
+    .payment-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #dcdcdc;
+        border-right: 1px solid #eaeaea;
+        background: #fafafa;
+    }
+
+    .payment-table th:last-child,
+    .payment-table td:last-child {
+        border-right: none;
+    }
+
+    .payment-table tr:hover {
+        background: #f5f8fc;
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .btn-edit {
+        padding: 4px 10px;
+        background: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btn-delete {
+        padding: 4px 10px;
+        background: #E74C3C;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+  </style>
+
+
+  <!-- HEADER SECTION -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h3 style="margin:0; color:#2B547D;">Payment List</h3>
+
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="position:relative;">
+        <input type="text" ng-model="searchText" placeholder="Search..." 
+               style="padding:6px 30px 6px 10px; border:1px solid #ccc; border-radius:4px; width:200px;">
+        <i class="fas fa-search" 
+           style="position:absolute; right:8px; top:50%; transform:translateY(-50%); color:#777;"></i>
+      </div>
+
+      <button ng-click="openAddPopup()" 
+              style="padding:8px 15px; background:#2B547D; color:#fff; border:none; border-radius:4px; cursor:pointer;">
+        + Add
+      </button>
+    </div>
+  </div>
+
+
+
+  <!-- ADD PAYMENT POPUP -->
+  <div ng-show="showAddPopup" 
+       style="position:absolute; top:140px; right:0; width:360px; padding:20px; background:#fff;
+              border:2px solid #2B547D; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:100;">
+              
+    <h4 style="margin-bottom:20px; color:#2B547D;">Add Payment</h4>
+
+    <form ng-submit="addPayment()">
+
+      <div style="margin-bottom:12px;">
+        <label style="font-weight:bold;">Bill ID</label>
+        <input type="number" ng-model="newPayment.bill_id" required
+               style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label style="font-weight:bold;">Amount Paid</label>
+        <input type="number" ng-model="newPayment.amount_paid" required
+               style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label style="font-weight:bold;">Payment Method</label>
+        <input type="text" ng-model="newPayment.payment_method"
+               style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label style="font-weight:bold;">Payment Date</label>
+        <input type="date" ng-model="newPayment.payment_date"
+               style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label style="font-weight:bold;">Bank Name</label>
+        <input type="text" ng-model="newPayment.bank_name"
+               style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+
+      <div style="text-align:right;">
+        <button type="button" ng-click="closeAddPopup()" 
+                style="margin-right:8px; padding:6px 12px; background:#7F9DB9; color:white; border:none; border-radius:4px;">
+          Cancel
+        </button>
+
+        <button type="submit"
+                style="padding:6px 12px; background:#2B547D; color:white; border:none; border-radius:4px;">
+          Add
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+
+
+
+
+  <!-- EDIT PAYMENT POPUP -->
+  <div ng-show="showEditPopup"
+       style="position:absolute; top:140px; right:150px; width:360px; padding:20px; 
+              background:#fff; border:2px solid #4CAF50; border-radius:6px;
+              box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:100;">
+              
+    <h4 style="margin-bottom:20px; color:#4CAF50;">Edit Payment</h4>
+
+    <form ng-submit="updatePayment()">
+
+      <label style="font-weight:bold;">Payment ID</label>
+      <input type="text" ng-model="editPayment.payment_id" readonly
+             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:12px;">
+
+      <label style="font-weight:bold;">Bill ID</label>
+      <input type="text" ng-model="editPayment.bill_id" readonly
+             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:12px;">
+
+      <label style="font-weight:bold;">Amount Paid</label>
+      <input type="number" ng-model="editPayment.amount_paid" required
+             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:12px;">
+
+      <label style="font-weight:bold;">Payment Method</label>
+      <input type="text" ng-model="editPayment.payment_method"
+             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:12px;">
+
+      <label style="font-weight:bold;">Payment Date</label>
+      <input type="text" ng-model="editPayment.payment_date"
+             placeholder="YYYY-MM-DD"
+             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:12px;">
+
+      <label style="font-weight:bold;">Bank Name</label>
+      <input type="text" ng-model="editPayment.bank_name"
+             style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:12px;">
+
+      <div style="text-align:right;">
+        <button type="button" ng-click="closeEditPopup()" 
+                style="margin-right:8px; padding:6px 12px; background:#7F9DB9; color:white; border:none; border-radius:4px;">
+          Cancel
+        </button>
+
+        <button type="submit"
+                style="padding:6px 12px; background:#4CAF50; color:white; border:none; border-radius:4px;">
+          Update
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+
+
+
+
+  <!-- PAYMENT TABLE -->
+  <table class="payment-table">
+      <thead>
+          <tr>
+              <th>Payment ID</th>
+              <th>Bill ID</th>
+              <th>Amount Paid</th>
+              <th>Payment Method</th>
+              <th>Payment Date</th>
+              <th>Bank Name</th>
+              <th style="text-align:center;">Actions</th>
+          </tr>
+      </thead>
+
+      <tbody>
+          <tr ng-repeat="payment in pagedPayments() | filter:searchText">
+              <td>{{ payment.payment_id }}</td>
+              <td>{{ payment.bill_id }}</td>
+              <td>{{ payment.amount_paid }}</td>
+              <td>{{ payment.payment_method }}</td>
+              <td>{{ payment.payment_date }}</td>
+              <td>{{ payment.bank_name }}</td>
+
+              <td>
+                <div class="actions">
+                  <button class="btn-edit" 
+                          ng-click="openEditPopup(payment)">
+                    Edit
+                  </button>
+
+                  <button class="btn-delete"
+                          ng-click="deletePayment(payment.payment_id)">
+                    Delete
+                  </button>
+                </div>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+
+
+
+  <!-- PAGINATION -->
+  <div style="margin-top:15px; text-align:right;">
+      <button ng-disabled="currentPage == 1" 
+              ng-click="prevPage()"
+              style="padding:6px 12px; margin-right:5px; background:#2B547D; color:white; border:none; border-radius:4px;">
+        Prev
+      </button>
+
+      <span style="margin:0 10px; font-weight:bold;">
+        Page {{ currentPage }} of {{ totalPages() }}
+      </span>
+
+      <button ng-disabled="currentPage == totalPages()"
+              ng-click="nextPage()"
+              style="padding:6px 12px; background:#2B547D; color:white; border:none; border-radius:4px;">
+        Next
+      </button>
+  </div>
+
+</div>

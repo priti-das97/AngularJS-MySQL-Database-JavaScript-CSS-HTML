@@ -1,0 +1,46 @@
+/* Universal Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; }
+
+header, footer { background-color: #333; color: white; padding: 15px 0; }
+.header-container {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; max-width: 1300px; margin: 0 auto; padding: 0 20px;
+}
+
+.logo img { height: 50px; width: auto; display: block; }
+
+nav.menu ul { list-style: none; display: flex; }
+nav.menu ul li { margin-left: 20px; }
+nav.menu ul li:first-child { margin-left: 0; }
+nav.menu ul li a {
+  color: white; text-decoration: none; font-weight: bold; transition: color 0.3s ease;
+}
+nav.menu ul li a:hover { color: #aaa; }
+
+footer { text-align: center; }
+
+.container { display: flex; height: calc(100vh - 130px); }
+.left-side, .right-side {
+  flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;
+}
+.left-side img {
+  max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 8px;
+}
+
+.login-form {
+  width: 100%; max-width: 350px; background: #ebebeb; padding: 30px;
+  border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.login-form h2 { margin-bottom: 20px; text-align: center; }
+.login-form label { display: block; margin-bottom: 5px; font-weight: bold; }
+.login-form input[type="text"],
+.login-form input[type="password"],
+.login-form button {
+  width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px;
+}
+.login-form input[type="text"], .login-form input[type="password"] { border: 1px solid #ccc; }
+.login-form button {
+  background-color: #000; border: none; color: white; font-weight: bold; cursor: pointer;
+}
+.login-form button:hover { background-color: #333; }

@@ -1,0 +1,190 @@
+<div ng-controller="PatientController" style="font-family:Arial, sans-serif; color:#333;">
+
+  <!-- Small styles reused for action buttons & popup (like Room) -->
+  <style>
+    .patient-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .patient-btn-edit {
+      padding: 4px 10px;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .patient-btn-delete {
+      padding: 4px 10px;
+      background: #E74C3C;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+  </style>
+
+  <!-- Header + Search + Add Patient Button -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h3 style="margin:0; color:#2B547D;">Patient List</h3>
+
+    <div style="display:flex; align-items:center; gap:10px;">
+      <!-- Search Input with Icon -->
+      <div style="position:relative;">
+        <input type="text" ng-model="searchText" placeholder="Search..." style="padding:6px 30px 6px 10px; border:1px solid #ccc; border-radius:4px; width:200px;">
+        <!-- Search Icon -->
+        <i class="fas fa-search" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); color:#777; cursor:pointer;" ng-click="searchFunction()"></i>
+      </div>
+
+      <!-- Add Button -->
+      <button ng-click="openAddPopup()" style="padding:8px 15px; background:#2B547D; color:#fff; border:none; border-radius:4px; cursor:pointer;">+ Add</button>
+    </div>
+  </div>
+
+  <!-- Add Patient Popup -->
+  <div ng-show="showAddPopup" style="position:absolute; top:80px; right:0; width:360px; padding:20px; background:#fff; border:2px solid #2B547D; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:100;">
+    <h4 style="margin-bottom:20px; color:#2B547D;">Add Patient</h4>
+    <form ng-submit="addPatient()">
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Name</label>
+        <input type="text" ng-model="newPatient.p_name" placeholder="Patient Name" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" required>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Age</label>
+        <input type="number" ng-model="newPatient.age" placeholder="Age" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" required>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Gender</label>
+        <select ng-model="newPatient.gender" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Contact Info</label>
+        <input type="text" ng-model="newPatient.contact_info" placeholder="Phone" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" required>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Address</label>
+        <input type="text" ng-model="newPatient.address" placeholder="Address" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Doctor ID</label>
+        <input type="number" ng-model="newPatient.doctor_id" placeholder="Doctor ID" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Room ID</label>
+        <input type="number" ng-model="newPatient.room_id" placeholder="Room ID" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+      <div style="text-align:right;">
+        <button type="button" ng-click="closeAddPopup()" style="margin-right:8px; padding:6px 12px; border:none; border-radius:4px; background:#7F9DB9; color:#fff; cursor:pointer;">Cancel</button>
+        <button type="submit" style="padding:6px 12px; border:none; border-radius:4px; background:#2B547D; color:#fff; cursor:pointer;">Add</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Edit Patient Popup -->
+  <div ng-show="showEditPatientPopup" style="position:absolute; top:80px; right:150px; width:360px; padding:20px; background:#fff; border:2px solid #4CAF50; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:150;">
+    <h4 style="margin-bottom:20px; color:#4CAF50;">Edit Patient</h4>
+    <form ng-submit="updatePatient()">
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Patient ID</label>
+        <input type="text" ng-model="editPatient.patient_id" readonly style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Name</label>
+        <input type="text" ng-model="editPatient.p_name" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" required>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Age</label>
+        <input type="number" ng-model="editPatient.age" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" required>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Gender</label>
+        <select ng-model="editPatient.gender" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Contact Info</label>
+        <input type="text" ng-model="editPatient.contact_info" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Address</label>
+        <input type="text" ng-model="editPatient.address" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Doctor ID</label>
+        <input type="number" ng-model="editPatient.doctor_id" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-weight:bold; margin-bottom:5px;">Room ID</label>
+        <input type="number" ng-model="editPatient.room_id" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+      </div>
+      <div style="text-align:right;">
+        <button type="button" ng-click="closeEditPatientPopup()" style="margin-right:8px; padding:6px 12px; border:none; border-radius:4px; background:#7F9DB9; color:#fff; cursor:pointer;">Cancel</button>
+        <button type="submit" style="padding:6px 12px; border:none; border-radius:4px; background:#4CAF50; color:#fff; cursor:pointer;">Update</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Patient Table -->
+  <div class="table-container" style="margin-top:20px; overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; table-layout:fixed; border:2px solid #d4cbcb; background:#d4cbcb;">
+      <thead>
+        <tr style="background:#2B547D; color:#fff; text-align:left;">
+<th style="width:3%; padding:6px; text-align:center; border-right:1px solid #1F3E5B;">ID</th>
+          <th style="width:15%; padding:10px; border-right:1px solid #1F3E5B;">Name</th>
+          <th style="width:5%; padding:10px; border-right:1px solid #1F3E5B;">Age</th>
+          <th style="width:7%; padding:10px; border-right:1px solid #1F3E5B;">Gender</th>
+          <th style="width:18%; padding:10px; border-right:1px solid #1F3E5B;">Contact</th>
+          <th style="width:16%; padding:8px; border-right:1px solid #1F3E5B;">Address</th>
+
+          <th style="width:10%; padding:10px; border-right:1px solid #1F3E5B;">Doctor ID</th>
+          <th style="width:8%; padding:10px; border-right:1px solid #1F3E5B;">Room ID</th>
+          <th style="width:10%; padding:10px; text-align:center;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="patient in pagedPatients() | filter:searchText" style="border-bottom:1px solid #ccc; background:#fafafa;">
+         <td style="padding:4px 6px; text-align:center; border-right:1px solid #ccc;">
+    {{ patient.patient_id }}
+</td>
+
+          <td style="padding:8px; border-right:1px solid #ccc;">{{ patient.p_name }}</td>
+          <td style="padding:8px; border-right:1px solid #ccc;">{{ patient.age }}</td>
+          <td style="padding:8px; border-right:1px solid #ccc;">{{ patient.gender }}</td>
+          <td style="padding:8px; border-right:1px solid #ccc;">{{ patient.contact_info }}</td>
+       <td style="padding:6px; border-right:1px solid #ccc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+    {{ patient.address }}
+</td>
+
+          <td style="padding:8px; border-right:1px solid #ccc;">{{ patient.doctor_id }}</td>
+          <td style="padding:8px; border-right:1px solid #ccc;">{{ patient.room_id }}</td>
+          <td style="padding:8px;">
+            <div class="patient-actions">
+              <button class="patient-btn-edit" ng-click="openEditPatientPopup(patient)">Edit</button>
+              <button class="patient-btn-delete" ng-click="deletePatient(patient.patient_id)">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination" style="margin-top:15px; text-align:right;">
+      <button ng-disabled="currentPage == 1" ng-click="prevPage()" style="padding:6px 12px; margin-right:5px; border:none; border-radius:4px; background:#2B547D; color:#fff; cursor:pointer;">Prev</button>
+      <span style="margin:0 10px; font-weight:bold;">Page {{ currentPage }} of {{ totalPages() }}</span>
+      <button ng-disabled="currentPage == totalPages()" ng-click="nextPage()" style="padding:6px 12px; border:none; border-radius:4px; background:#2B547D; color:#fff; cursor:pointer;">Next</button>
+    </div>
+  </div>
+
+</div>

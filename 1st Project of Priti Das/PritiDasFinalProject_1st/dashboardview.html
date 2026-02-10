@@ -1,0 +1,121 @@
+<!-- dashboardview.html -->
+<div class="dashboard" ng-controller="DashboardController">
+
+  <h1>Dashboard</h1>
+  <p class="subtitle">Quick overview of the hospital activity</p>
+
+  <!-- ================= TOP CARDS ================= -->
+  <div class="dash-cards">
+
+    <!-- Doctors -->
+    <div class="dash-card card-doctors">
+      <span class="card-title">Total Doctors</span>
+      <span class="card-value">{{stats.totalDoctors}}</span>
+      <div class="card-bottom">
+        <span class="card-footer">Active</span>
+        <i class="fa fa-user-md card-bottom-icon"></i>
+      </div>
+    </div>
+
+    <!-- Patients -->
+    <div class="dash-card card-patients">
+      <span class="card-title">Total Patients</span>
+      <span class="card-value">{{stats.totalPatients}}</span>
+      <div class="card-bottom">
+        <span class="card-footer">Registered</span>
+        <i class="fa fa-users card-bottom-icon"></i>
+      </div>
+    </div>
+
+    <!-- Rooms -->
+    <div class="dash-card card-rooms">
+      <span class="card-title">Rooms Available</span>
+      <span class="card-value">{{stats.roomsAvailable}}</span>
+      <div class="card-bottom">
+        <span class="card-footer">{{stats.roomsTotal}} total</span>
+        <i class="fa fa-bed card-bottom-icon"></i>
+      </div>
+    </div>
+
+    <!-- Bills -->
+    <div class="dash-card card-bills">
+      <span class="card-title">Pending Bills</span>
+      <span class="card-value">{{stats.pendingBills}}</span>
+      <div class="card-bottom">
+        <span class="card-footer">
+          Paid: {{stats.paidAmount | number:2}}
+        </span>
+        <i class="fa fa-file-invoice-dollar card-bottom-icon"></i>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= BOTTOM SECTION ================= -->
+  <div class="dash-bottom">
+
+    <!-- ===== PATIENTS BY GENDER ===== -->
+    <div class="dash-panel">
+      <h3><b>Patients by Gender</b></h3>
+
+      <!-- REAL PIE CHART -->
+<canvas id="genderChart" ng-show="genderLoaded"></canvas>
+<div class="legend">
+  <span>
+    <span class="dot female"></span>
+    <b>Female</b> ({{gender.Female}})
+  </span>
+  <span>
+    <span class="dot male"></span>
+    <b>Male</b> ({{gender.Male}})
+  </span>
+</div>
+    </div>
+
+    <!-- ===== BILLING OVERVIEW ===== -->
+    <div class="dash-panel">
+      <h3><b>Billing Overview</b></h3>
+
+      <!-- REAL LINE CHART -->
+      <canvas id="billingChart" ng-show="billingLoaded"></canvas>
+
+
+      <div class="billing-totals">
+        <div>
+          <b>Total Paid:</b>
+          <span style="color: green;">
+            {{stats.paidAmount | number:2}}
+          </span>
+        </div>
+        <div>
+          <b>Total Remaining:</b>
+          <span style="color: red;">
+            {{stats.totalRemaining | number:2}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== QUICK ACTIONS ===== -->
+    <div class="dash-panel quick-actions">
+      <h3><b>Quick Actions</b></h3>
+
+    <a href="#!/patient" class="qa-btn">
+    <i class="fa fa-user-plus"></i> Add Patient
+  </a>
+
+  <a href="#!/doctor" class="qa-btn">
+    <i class="fa fa-user-md"></i> Add Doctor
+  </a>
+
+  <a href="#!/room" class="qa-btn">
+    <i class="fa fa-bed"></i> Manage Rooms
+  </a>
+
+  <a href="#!/bill" class="qa-btn">
+    <i class="fa fa-file-invoice-dollar"></i> Create Bill
+  </a>
+    </div>
+
+  </div>
+</div>

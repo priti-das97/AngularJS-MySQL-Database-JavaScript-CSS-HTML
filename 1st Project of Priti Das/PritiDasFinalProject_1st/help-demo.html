@@ -1,0 +1,53 @@
+<!-- help-demo.html -->
+<div class="help-page" ng-controller="HelpController">
+
+  <div class="help-grid">
+
+    <!-- LEFT: FAQ (big card) -->
+    <section class="help-faq dash-panel">
+      <h2 class="help-title">FAQs</h2>
+
+      <div class="faq-list">
+        <article class="faq-item" ng-repeat="faq in faqs">
+          <h3 class="faq-q"><b>{{ faq.title }}</b></h3>
+          <p class="faq-a">{{ faq.text }}</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- RIGHT: stacked cards -->
+    <aside class="help-side">
+
+      <!-- Documentation card -->
+      <div class="help-card dash-panel doc-card">
+        <div class="card-icon">
+          <!-- inline SVG icon -->
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 3h8l4 4v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#2b7bef"/>
+          </svg>
+        </div>
+        <h3 class="card-title"> <b> Documentation </b> </h3>
+        <ul class="doc-list">
+          <li ng-repeat="d in docs"><a ng-href="{{d.url}}">{{ d.text }}</a></li>
+        </ul>
+      </div>
+
+      <!-- Support card -->
+      <div class="help-card dash-panel support-card">
+        <div class="card-icon circle-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 1a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3 3 3 0 0 0 3-3V4a3 3 0 0 0-3-3zM5 21a7 7 0 0 1 14 0" fill="#1fb08a"/>
+          </svg>
+        </div>
+        <h3 class="card-title"> <b> Support </b></h3>
+
+        <div class="support-info">
+          <p><strong>Email:</strong> <a href="mailto:{{support.email}}">{{ support.email }}</a></p>
+          <p><strong>Phone:</strong> <a href="tel:{{support.phone}}">{{ support.phone }}</a></p>
+          <p class="muted">Chat with support for live help during working hours.</p>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>

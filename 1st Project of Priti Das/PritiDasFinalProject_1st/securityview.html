@@ -1,0 +1,131 @@
+<div class="security-container">
+
+  <!-- Admin Users (left large card) -->
+  <div class="security-card admin-card">
+    <h3>Admin Users</h3>
+
+    <table class="sec-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Last Login</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="u in security.users">
+          <td class="admin-user-cell">
+            <img ng-src="{{u.avatar}}" class="avatar" alt="avatar">
+            <div>
+              <div class="admin-name">{{u.name}}</div>
+              <div class="admin-email">{{u.email}}</div>
+            </div>
+          </td>
+          <td>{{u.role}}</td>
+          <td>{{u.lastLogin}}</td>
+          <td>
+            <span class="badge" ng-class="u.active ? 'badge-active' : 'badge-disabled'">
+              {{u.active ? 'Active' : 'Disabled'}}
+            </span>
+          </td>
+          <td class="icon-actions">
+            <i class="fa fa-edit icon-btn" ng-click="editAdmin(u)" title="Edit"></i>
+            <i class="fa fa-refresh icon-btn" ng-click="resetPassword(u)" title="Reset Password"></i>
+            <i class="fa fa-trash icon-btn danger" ng-click="removeAdmin(u)" title="Remove"></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+<!-- Active Sessions Card (Left Column Under Admin Users) -->
+<div class="security-card active-sessions-left">
+  <h3>Active Sessions</h3>
+
+  <table class="sec-table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>IP Address</th>
+        <th>Active Since</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="s in security.sessions">
+        <td>{{s.user}}</td>
+        <td>{{s.ip}}</td>
+        <td>{{s.time}}</td>
+        <td>
+          <button class="btn-session" ng-click="logoutSession(s.id)">Sign Out</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+<!-- Security Policies (final / polished) -->
+<div class="security-card policies-card" ng-controller="SecurityController as sc">
+  <div class="policies-header">
+    <h3>Security Policies</h3>
+    <div class="policies-sub">
+      <span class="checkmark" ng-if="security.policy.strongPasswords">✔</span>
+      <span class="policies-subtext">Strong passwords</span>
+    </div>
+    <hr class="policies-sep">
+  </div>
+
+  <div class="policies-body">
+
+    <div class="policy-row nicer">
+      <label class="policy-label">Minimum password length</label>
+      <input type="number" ng-model="security.policy.minLength" min="6" class="policy-input">
+    </div>
+
+    <div class="policy-row nicer">
+      <label class="policy-label">Failed attempts lockout</label>
+      <input type="number" ng-model="security.policy.lockoutAttempts" min="1" class="policy-input">
+    </div>
+
+    <div class="policy-row nicer">
+      <label class="policy-label">Session timeout</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="number" ng-model="security.policy.sessionTimeout" min="1" class="policy-input" style="width:82px">
+        <span class="muted">minutes</span>
+      </div>
+    </div>
+
+    <div class="policy-row nicer">
+      <label class="policy-label">Two-factor authentication</label>
+      <label class="switch">
+        <input type="checkbox" ng-model="security.policy.enable2FA">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div style="margin-top:14px;">
+      <button class="btn-save-policy full" ng-click="savePolicies()">Save</button>
+    </div>
+  </div>
+</div>
+
+
+ 
+
+  <!-- Audit Logs (bottom-right, below sessions) -->
+  <div class="security-card audit-card">
+    <h3>Audit Logs</h3>
+    <ul class="audit-list">
+      <li ng-repeat="log in security.audit"> {{log}}</li>
+    </ul>
+  </div>
+
+</div>

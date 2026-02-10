@@ -1,0 +1,312 @@
+Step 1: Setup Your Project Directory:
+
+Go to: C:\xampp\htdocs
+
+Create a folder called hospital_system
+
+===================================
+
+index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Header, Footer, Image + Login</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <h1>My Website Header</h1>
+      <nav class="menu">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="left-side">
+      <img src="hospitalBG.jpg" alt="Example Image" />
+    </div>
+    <div class="right-side">
+      <form class="login-form">
+        <h2>Login</h2>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+
+        <button type="submit">Log In</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>My Website Footer © 2025</p>
+  </footer>
+
+</body>
+</html>
+
+
+===================================
+
+style.css
+
+<style>
+   *,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+  header, footer {
+      background-color: #333;
+      color: white;
+      padding: 15px 0;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .header-container h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    nav.menu ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav.menu ul li {
+      margin-left: 20px;
+    }
+
+    nav.menu ul li:first-child {
+      margin-left: 0;
+    }
+
+    nav.menu ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    nav.menu ul li a:hover {
+      color: #aaa;
+    }
+
+    footer {
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      height: calc(100vh - 130px); /* Adjusted for header + footer height */
+    }
+
+    .left-side, .right-side {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .left-side img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .login-form {
+      width: 100%;
+      max-width: 350px;
+      background: #d1cdcd;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .login-form h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .login-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"],
+    .login-form button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+      border: 1px solid #ccc;
+    }
+
+    .login-form button {
+      background-color: #000; /* black */
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login-form button:hover {
+      background-color: #333;
+    }
+  </style>
+
+=======================================
+
+	DB
+
+
+
+CREATE TABLE doctor (
+    doctor_id INT PRIMARY KEY ,
+    dr_name VARCHAR(100),
+    specialization VARCHAR(100),
+    contact_info VARCHAR(100)
+);
+
+CREATE TABLE patient (
+    patient_id INT PRIMARY KEY AUTO_INCREMENT,
+    p_name VARCHAR(100),
+    age INT,
+    gender VARCHAR(10),
+    contact_info VARCHAR(100),
+	address VARCHAR(100),
+    doctor_id INT,
+    room_id INT,
+    FOREIGN KEY (doctor_id) REFERENCES doctor(doctor_id),
+    FOREIGN KEY (room_id) REFERENCES room(room_id)
+);
+
+CREATE TABLE room (
+    room_id INT PRIMARY KEY AUTO_INCREMENT,
+    room_number VARCHAR(20),
+    room_type VARCHAR(50),
+    is_available BOOLEAN,
+    room_price DECIMAL(10,2)
+);
+
+
+CREATE TABLE bill (
+    bill_id INT PRIMARY KEY,
+    patient_id INT,
+    services_tax DECIMAL(10,2),
+    total_amount DECIMAL(10,2),
+    paid_bill DECIMAL(10,2),
+    remaining_bill DECIMAL(10,2),
+    FOREIGN KEY (patient_id) REFERENCES patient(patient_id)
+);
+
+
+CREATE TABLE payment (
+    payment_id INT PRIMARY KEY,
+    bill_id INT,
+    amount_paid DECIMAL(10,2),
+    payment_method VARCHAR(50),
+    payment_date DATE,
+	bank_name VARCHAR(50),
+    FOREIGN KEY (bill_id) REFERENCES bill(bill_id)
+);
+
+INSERT INTO `bill` (`bill_id`, `patient_id`, `services_tax`, `total_amount`, `paid_bill`, `remaining_bill`) VALUES
+(101, 1, 100.00, 1000.00, 500.00, 600.00),
+(102, 2, 150.00, 1500.00, 1000.00, 650.00),
+(103, 3, 90.00, 900.00, 450.00, 540.00),
+(104, 4, 200.00, 2000.00, 1200.00, 1000.00),
+(105, 5, 180.00, 1800.00, 900.00, 1080.00),
+(106, 6, 120.00, 1200.00, 600.00, 720.00),
+(107, 7, 160.00, 1600.00, 800.00, 960.00),
+(108, 8, 130.00, 1300.00, 650.00, 780.00),
+(109, 9, 110.00, 1100.00, 550.00, 660.00),
+(110, 10, 170.00, 1700.00, 850.00, 1020.00);
+
+
+INSERT INTO `doctor` (`doctor_id`, `dr_name`, `specialization`, `contact_info`) VALUES
+(1, 'Dr. Priti Das', 'Cardiology', '123-456-7890'),
+(2, 'Dr. John Smith', 'Neurology', '987-654-3210'),
+(3, 'Dr. Emily Davis', 'Pediatrics', '555-123-4567'),
+(4, 'Dr. Michael Brown', 'Orthopedics', '444-555-6666'),
+(5, 'Dr. Sarah Wilson', 'Dermatology', '333-444-5555'),
+(6, 'Dr. David Lee', 'Oncology', '222-333-4444'),
+(7, 'Dr. Laura Martinez', 'Gynecology', '111-222-3333'),
+(8, 'Dr. Robert Taylor', 'Psychiatry', '999-888-7777'),
+(9, 'Dr. Anna White', 'Endocrinology', '888-777-6666'),
+(10, 'Dr. James Clark', 'General Surgery', '777-666-5555');
+
+
+INSERT INTO `patient` (`patient_id`, `p_name`, `age`, `gender`, `contact_info`, `address`, `doctor_id`, `room_id`) VALUES
+(1, 'Alice Johnson', 30, 'Female', 'alice@example.com', '123 Main St', 1, 11),
+(2, 'Bob Williams', 45, 'Male', 'bob@example.com', '456 Elm St', 2, 12),
+(3, 'Carol Miller', 28, 'Female', 'carol@example.com', '789 Pine St', 3, 13),
+(4, 'Daniel Harris', 52, 'Male', 'daniel@example.com', '321 Oak St', 4, 14),
+(5, 'Eva Green', 36, 'Female', 'eva@example.com', '654 Maple St', 5, 15),
+(6, 'Frank Moore', 40, 'Male', 'frank@example.com', '987 Birch St', 6, 16),
+(7, 'Grace Lee', 33, 'Female', 'grace@example.com', '135 Cedar St', 7, 17),
+(8, 'Henry Scott', 29, 'Male', 'henry@example.com', '246 Spruce St', 8, 18),
+(9, 'Isabel King', 41, 'Female', 'isabel@example.com', '357 Walnut St', 9, 19),
+(10, 'Jack Wright', 50, 'Male', 'jack@example.com', '468 Chestnut St', 10, 20);
+
+
+INSERT INTO `payment` (`payment_id`, `bill_id`, `amount_paid`, `payment_method`, `payment_date`, `bank_name`) VALUES
+(1011, 101, 500.00, 'Credit Card', '2025-08-16', 'Bank of America'),
+(1012, 102, 1000.00, 'Cash', '2025-08-17', 'N/A'),
+(1013, 103, 450.00, 'Debit Card', '2025-08-18', 'Chase'),
+(1014, 104, 1200.00, 'Credit Card', '2025-08-19', 'Wells Fargo'),
+(1015, 105, 900.00, 'Cash', '2025-08-20', 'N/A'),
+(1016, 106, 600.00, 'Debit Card', '2025-08-21', 'Citi'),
+(1017, 107, 800.00, 'Credit Card', '2025-08-22', 'Bank of America'),
+(1018, 108, 650.00, 'Cash', '2025-08-23', 'N/A'),
+(1019, 109, 550.00, 'Debit Card', '2025-08-24', 'Chase'),
+(1020, 110, 850.00, 'Credit Card', '2025-08-25', 'Wells Fargo');
+
+
+INSERT INTO `room` (`room_id`, `room_number`, `room_type`, `is_available`, `room_price`) VALUES
+(11, '101', 'General', 1, 1000.00),
+(12, '102', 'ICU', 0, 3000.00),
+(13, '103', 'General', 1, 1200.00),
+(14, '104', 'Private', 1, 2500.00),
+(15, '105', 'ICU', 0, 3200.00),
+(16, '106', 'General', 1, 1100.00),
+(17, '107', 'Private', 0, 2600.00),
+(18, '108', 'General', 1, 1300.00),
+(19, '109', 'Private', 1, 2700.00),
+(20, '110', 'ICU', 0, 3500.00);
+
